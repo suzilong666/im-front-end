@@ -1,10 +1,99 @@
 {
 	"pages": [{
-		"path": "pages/index/index",
-		"style": {
-			"navigationBarTitleText": "uni-app"
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path" : "pages/chats/chats",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/contacts/contacts",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/discover/discover",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/me/me",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/newFriend/newFriend",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/friendDetail/friendDetail",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
+		},
+		{
+			"path" : "pages/chat/chat",
+			"style" : 
+			{
+				"navigationBarTitleText" : "",
+				"enablePullDownRefresh" : false
+			}
 		}
-	}],
+	],
+	"tabBar": { //底部
+		"color": "#999999",
+		"selectedColor": "#09C160",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [{
+				"pagePath": "pages/chats/chats",
+				"iconPath": "static/img/tabbar/n0.png",
+				"selectedIconPath": "static/img/tabbar/n0_on.png",
+				"text": "消息"
+			},
+			{
+				"pagePath": "pages/contacts/contacts",
+				"iconPath": "static/img/tabbar/n01.png",
+				"selectedIconPath": "static/img/tabbar/n01_on.png",
+				"text": "通讯录"
+			},
+			{
+				"pagePath": "pages/discover/discover",
+				"iconPath": "static/img/tabbar/n02.png",
+				"selectedIconPath": "static/img/tabbar/n02_on.png",
+				"text": "发现"
+			},
+			{
+				"pagePath": "pages/me/me",
+				"iconPath": "static/img/tabbar/n03.png",
+				"selectedIconPath": "static/img/tabbar/n03_on.png",
+				"text": "我"
+			}
+		]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
