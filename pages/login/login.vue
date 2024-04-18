@@ -10,6 +10,8 @@
 		</view>
 
 		<button type="primary" @tap="login">登录</button>
+
+		<navigator url="/pages/register/register">注册</navigator>
 	</view>
 </template>
 
@@ -34,7 +36,11 @@
 				login(this.form).then(({
 					data
 				}) => {
-					uni.setStorageSync('token', data)
+					this.$store.commit('set', {
+						key: 'token',
+						value: data
+					})
+					this.$store.dispatch('getUserInfo')
 					ws.bind()
 					uni.switchTab({
 						url: '/pages/chats/chats'

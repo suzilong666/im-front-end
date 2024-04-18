@@ -1,3 +1,5 @@
+import store from '@/store/index.js'; //需要引入store
+
 function request({
 	url,
 	method = 'GET',
@@ -5,7 +7,7 @@ function request({
 }) {
 	return new Promise((resolve, reject) => {
 		const header = {}
-		const token = uni.getStorageSync('token')
+		const token = store.state.token;
 		if (token) {
 			header['Authorization'] = token
 		}

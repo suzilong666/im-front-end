@@ -13,7 +13,8 @@
 			<view class="" v-for="item in applicationList">
 				<view class="">
 					<view class="">{{item.nickname}}</view>
-					<button v-if="item.status == 1" class="mini-btn" type="primary" size="mini" @tap="accept(item.id)">接受</button>
+					<button v-if="item.status == 1" class="mini-btn" type="primary" size="mini"
+						@tap="accept(item.id)">接受</button>
 				</view>
 			</view>
 		</view>
@@ -40,8 +41,11 @@
 		},
 		methods: {
 			accept(id) {
-				accept({id}).then(() => {
+				accept({
+					id
+				}).then(() => {
 					this.getApplication()
+					this.$store.dispatch('getFriendList')
 				})
 			},
 			getApplication() {

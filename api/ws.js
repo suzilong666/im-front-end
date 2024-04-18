@@ -1,6 +1,7 @@
 import {
 	bind
 } from '@/api/api';
+import store from '@/store/index.js'; //需要引入store
 
 class Ws {
 
@@ -33,7 +34,7 @@ class Ws {
 	}
 
 	bind() {
-		const token = uni.getStorageSync('token')
+		const token = store.state.token;
 		const {
 			clientId
 		} = this
