@@ -6,6 +6,7 @@ import {
 	getUserInfo,
 	getFriendList,
 	getChatList,
+	getConfig
 } from '@/api/api';
 
 Vue.use(Vuex); //vue的插件机制
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
 	state: {
 		token: '',
 		userInfo: {},
+		config: {},
 		chatList: [],
 		friendList: [],
 		chatList: [],
@@ -37,8 +39,19 @@ const store = new Vuex.Store({
 			getUserInfo().then(({
 				data
 			}) => {
+				data.avatar = context.state.config.baseUrl
 				context.commit('set', {
 					key: 'userInfo',
+					value: data
+				})
+			})
+		},
+		getConfig(context) {
+			getConfig().then(({
+				data
+			}) => {
+				context.commit('set', {
+					key: 'config',
 					value: data
 				})
 			})

@@ -1,12 +1,29 @@
 <template>
 	<view>
 		<uni-list>
-			<uni-list-item title="头像" clickable @click="uploadAvatar">
+			<uni-list-item clickable link @click="uploadAvatar">
 				<template slot="header">
-					<image :src="this.$store.state.userInfo.avatar" style="width: 50px;height: 50px;"></image>
+					<view class="uni-list-item__content-title" style="line-height: 80rpx;">
+						头像
+					</view>
+				</template>
+				<template slot="footer">
+					<image :src="this.$store.state.userInfo.avatar"
+						style="width: 80rpx;height: 80rpx; border-radius: 8rpx;"></image>
 				</template>
 			</uni-list-item>
+
+			<uni-list-item title="名字" :rightText="$store.state.userInfo.nickname" clickable link
+				@click="$refs.inputDialog.open()"></uni-list-item>
+
+			<uni-list-item title="二维码名片" clickable link></uni-list-item>
 		</uni-list>
+
+		<!-- 修改名字 -->
+		<uni-popup ref="inputDialog" type="dialog">
+			<uni-popup-dialog ref="inputClose" mode="input" title="输入名字" placeholder="请输入名字"
+				@confirm="updateNickname"></uni-popup-dialog>
+		</uni-popup>
 	</view>
 </template>
 
@@ -22,6 +39,14 @@
 			};
 		},
 		methods: {
+			updateNickname(nickname) {
+				if (!nickname) return
+				updateUserInfo({
+					nickname
+				}).then(() => {
+					this.$store.dispatch('getUserInfo')
+				})
+			},
 			uploadAvatar() {
 				uni.chooseImage({
 					success: (chooseImageRes) => {
@@ -29,21 +54,9 @@
 						upload(file).then(({
 							data
 						}) => {
-							const {
-								url,
-								fullUrl
-							} = data
-							console.log(data);
 							updateUserInfo({
-								avatar: url
+								avatar: data
 							}).then(() => {
-								// this.$store.commit('set', {
-								// 	key: 'userInfo',
-								// 	value: {
-								// 		...this.$store.state.userInfo,
-								// 		avatar: fullUrl
-								// 	}
-								// })
 								this.$store.dispatch('getUserInfo')
 							})
 						})

@@ -3,8 +3,9 @@
 		ws
 	} from '@/api/ws'
 	export default {
-		onLaunch: function() {},
-		onLoad() {},
+		onLaunch: function() {
+			this.$store.dispatch('getConfig')
+		},
 		onShow: function() {},
 		onHide: function() {}
 	}

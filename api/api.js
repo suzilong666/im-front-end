@@ -24,3 +24,4 @@ export const getChatHistory = (data) => get('/api/chat/getChatHistory', data)
 export const getChatList = (data) => get('/api/chat/getChatList', data)
 
 export const upload = (data) => uploadFn('/api/common/upload', data)
+export const getConfig = (data) => get('/api/common/getConfig', data)
