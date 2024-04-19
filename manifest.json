@@ -61,6 +61,9 @@
             "proxy" : {
                 "/api" : {
                     "target" : "http://127.0.0.1/index.php"
+                },
+                "/storage/topic" : {
+                    "target" : "http://127.0.0.1/index.php"
                 }
             },
             "https" : false

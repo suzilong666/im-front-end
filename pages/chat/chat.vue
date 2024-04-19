@@ -24,7 +24,7 @@
 			return {
 				id: undefined,
 				message: '',
-				chatHistory: []
+				chatHistory: [],
 			};
 		},
 		computed: {
@@ -36,6 +36,12 @@
 			id
 		}) {
 			this.id = id
+			const friend = this.$store.getters.getFriendById(id)
+			if (friend) {
+				uni.setNavigationBarTitle({
+					title: friend.nickname || friend.username
+				})
+			}
 			this.getChatHistory()
 		},
 		methods: {
@@ -57,8 +63,10 @@
 				send({
 					receiver_id: id,
 					message
-				}).then(() => {
-					getChatHistory();
+				}).then(({
+					data
+				}) => {
+					this.chatHistory.push(data)
 				})
 				this.message = ''
 			}

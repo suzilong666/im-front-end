@@ -27,6 +27,11 @@ const store = new Vuex.Store({
 			state[key] = value
 		}
 	},
+	getters: {
+		getFriendById: (state) => (id) => {
+			return state.friendList.find(item => item.id == id)
+		}
+	},
 	actions: {
 		getUserInfo(context) {
 			getUserInfo().then(({
