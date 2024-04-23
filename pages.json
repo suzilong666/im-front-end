@@ -9,8 +9,7 @@
 		{
 			"path": "pages/chats/chats",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationStyle": "custom"
 			}
 		},
 		{

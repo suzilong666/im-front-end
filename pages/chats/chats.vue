@@ -1,5 +1,6 @@
 <template>
 	<view>
+		<NavigationHeader></NavigationHeader>
 		<uni-list :border="true">
 			<uni-list-chat v-for="item in $store.state.chatList" :title="item.nickname" :avatar="item.avatar"
 				:note="item.last_message" :time="item.last_message_time"
@@ -9,7 +10,11 @@
 </template>
 
 <script>
+	import NavigationHeader from '@/components/NavigationHeader.vue'
 	export default {
+		components: {
+			NavigationHeader
+		},
 		data() {
 			return {
 

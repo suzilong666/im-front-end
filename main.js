@@ -3,6 +3,9 @@ import Vue from 'vue'
 import App from './App'
 import store from './store'
 
+import uView from '@/uni_modules/uview-ui'
+Vue.use(uView)
+
 Vue.prototype.$store = store
 Vue.prototype.$showToast = (title, icon = 'none') => {
 	uni.showToast({

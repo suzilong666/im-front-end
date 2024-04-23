@@ -6,7 +6,8 @@ import {
 	getUserInfo,
 	getFriendList,
 	getChatList,
-	getConfig
+	getConfig,
+	getChatHistory
 } from '@/api/api';
 
 Vue.use(Vuex); //vue的插件机制
@@ -73,6 +74,30 @@ const store = new Vuex.Store({
 				context.commit('set', {
 					key: 'chatList',
 					value: data
+				})
+			})
+		},
+		/**
+		 * 获取聊天记录
+		 * @param {Object} context
+		 * @param {Object} id 好友uid
+		 */
+		getChatHistory(context, id) {
+			if (!id) return
+			const {
+				chatList
+			} = context.state
+			getChatHistory({
+				id
+			}).then(({
+				data
+			}) => {
+				const chat = chatList.find(item => item.friend_id == id)
+				if (!chat) return
+				chat.history = data
+				context.commit('set', {
+					key: 'chatList',
+					value: chatList
 				})
 			})
 		},

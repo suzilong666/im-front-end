@@ -24,12 +24,19 @@
 			return {
 				id: undefined,
 				message: '',
-				chatHistory: [],
 			};
 		},
 		computed: {
 			userInfo() {
 				return this.$store.state.userInfo
+			},
+			chatHistory() {
+				const {
+					id
+				} = this
+				const chat = this.$store.state.chatList.find(item => item.friend_id == id)
+				if (chat && Array.isArray(chat.history)) return chat.history
+				return []
 			}
 		},
 		onLoad({
@@ -42,19 +49,9 @@
 					title: friend.nickname || friend.username
 				})
 			}
-			this.getChatHistory()
+			this.$store.dispatch('getChatHistory', id)
 		},
 		methods: {
-			getChatHistory() {
-				getChatHistory({
-					id: this.id
-				}).then(({
-					data
-				}) => {
-					this.$set(this, 'chatHistory', data)
-					this.$forceUpdate()
-				})
-			},
 			send() {
 				const {
 					id,
