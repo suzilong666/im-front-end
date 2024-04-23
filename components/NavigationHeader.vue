@@ -5,7 +5,9 @@
 		<view class="title">{{title}}</view>
 
 		<view class="right">
-			<uni-icons type="plus" size="30"></uni-icons>
+			<view class="dropdown">
+				<u-icon name="plus-circle" size="25"></u-icon>
+			</view>
 		</view>
 	</view>
 </template>
@@ -46,6 +48,16 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+
+			.dropdown {
+				position: relative;
+
+				.menu {
+					z-index: 99;
+					position: absolute;
+
+				}
+			}
 		}
 	}
 </style>
