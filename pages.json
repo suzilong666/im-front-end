@@ -74,6 +74,14 @@
 				"navigationBarTitleText": "个人信息",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path" : "pages/initiateGroupChat/initiateGroupChat",
+			"style" : 
+			{
+				"navigationBarTitleText" : "发起群聊",
+				"enablePullDownRefresh" : false
+			}
 		}
 	],
 	"tabBar": { //底部

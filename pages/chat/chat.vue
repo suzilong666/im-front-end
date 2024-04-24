@@ -16,13 +16,15 @@
 <script>
 	import {
 		send,
+		sendToGroup,
 		getChatHistory
 	} from '@/api/api';
 
 	export default {
 		data() {
 			return {
-				id: undefined,
+				id: 0,
+				type: 1,
 				message: '',
 			};
 		},
@@ -32,39 +34,64 @@
 			},
 			chatHistory() {
 				const {
-					id
+					id,
+					type
 				} = this
-				const chat = this.$store.state.chatList.find(item => item.friend_id == id)
+				const chat = this.$store.state.chatList.find(item => type == 1 ? item.friend_id : item.group_id == id)
 				if (chat && Array.isArray(chat.history)) return chat.history
 				return []
 			}
 		},
 		onLoad({
-			id
+			id,
+			type
 		}) {
 			this.id = id
-			const friend = this.$store.getters.getFriendById(id)
-			if (friend) {
-				uni.setNavigationBarTitle({
-					title: friend.nickname || friend.username
-				})
+			this.type = type
+
+			if (type == 1) {
+				// 私聊
+				const friend = this.$store.getters.getFriendById(id)
+				if (friend) {
+					uni.setNavigationBarTitle({
+						title: friend.nickname || friend.username
+					})
+				}
+				this.$store.dispatch('getChatHistory', id)
+			} else {
+				// 群聊
+				const group = this.$store.getters.getGroupChatById(id)
+				if (group) {
+					uni.setNavigationBarTitle({
+						title: group.name
+					})
+				}
+				this.$store.dispatch('getGroupChatHistory', id)
 			}
-			this.$store.dispatch('getChatHistory', id)
 		},
 		methods: {
 			send() {
 				const {
 					id,
+					type,
 					message
 				} = this
-				send({
-					receiver_id: id,
-					message
-				}).then(({
-					data
-				}) => {
-					this.chatHistory.push(data)
-				})
+				if (type == 1) {
+					send({
+						receiver_id: id,
+						message
+					}).then(({
+						data
+					}) => {})
+				} else {
+					sendToGroup({
+						group_id: id,
+						message
+					}).then(({
+						data
+					}) => {})
+				}
+
 				this.message = ''
 			}
 		}

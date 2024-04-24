@@ -1,19 +1,20 @@
 <template>
 	<view>
-		<NavigationHeader></NavigationHeader>
+		<navigationHeader title="消息"></navigationHeader>
+
 		<uni-list :border="true">
-			<uni-list-chat v-for="item in $store.state.chatList" :title="item.nickname" :avatar="item.avatar"
-				:note="item.last_message" :time="item.last_message_time"
-				:to="`/pages/chat/chat?id=${item.friend_id}`"></uni-list-chat>
+			<uni-list-chat v-for="item in $store.state.chatList" :title="item.title" :avatar="item.avatar" :note="item.last_message"
+				:time="item.last_message_time" clickable
+				@click="navigateTo(`/pages/chat/chat?id=${item.type == 1 ? item.friend_id : item.group_id}&type=${item.type}`)"></uni-list-chat>
 		</uni-list>
 	</view>
 </template>
 
 <script>
-	import NavigationHeader from '@/components/NavigationHeader.vue'
+	import navigationHeader from '@/components/navigationHeader.vue'
 	export default {
 		components: {
-			NavigationHeader
+			navigationHeader
 		},
 		data() {
 			return {
@@ -22,7 +23,14 @@
 		},
 		onShow() {
 			this.$store.dispatch('getChatList')
-		}
+		},
+		methods: {
+			navigateTo(url) {
+				uni.navigateTo({
+					url
+				})
+			}
+		},
 	}
 </script>
 

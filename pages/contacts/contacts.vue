@@ -1,14 +1,19 @@
 <template>
 	<view>
-		<uni-list>
-			<uni-list-item :show-extra-icon="true" title="新的朋友" to="/pages/newFriend/newFriend" />
-			<uni-list-item :show-extra-icon="true" title="群聊" to="/pages/newFriend/newFriend" />
-		</uni-list>
-		
-		<uni-list>
-			<uni-list-item v-for="item in $store.state.friendList" :show-extra-icon="true" :title="item.nickname"
-				:to="`/pages/friendDetail/friendDetail?id=${item.id}`" />
-		</uni-list>
+		<u-list>
+			<u-list-item>
+				<u-cell title="新的朋友" @tap="navigateTo('/pages/newFriend/newFriend')">
+					<u-avatar slot="icon" shape="square" size="35" customStyle="margin: -3px 5px -3px 0"></u-avatar>
+				</u-cell>
+				<u-cell title="群聊" @tap="navigateTo('/pages/newFriend/newFriend')">
+					<u-avatar slot="icon" shape="square" size="35" customStyle="margin: -3px 5px -3px 0"></u-avatar>
+				</u-cell>
+				<u-cell v-for="item in $store.state.friendList" :title="item.nickname"
+					@tap="navigateTo(`/pages/friendDetail/friendDetail?id=${item.id}`)">
+					<u-avatar slot="icon" shape="square" size="35" customStyle="margin: -3px 5px -3px 0"></u-avatar>
+				</u-cell>
+			</u-list-item>
+		</u-list>
 	</view>
 </template>
 
@@ -19,6 +24,13 @@
 		},
 		onLoad() {
 			this.$store.dispatch('getFriendList')
+		},
+		methods: {
+			navigateTo(url) {
+				uni.navigateTo({
+					url
+				});
+			}
 		},
 	}
 </script>

@@ -40,7 +40,7 @@
 						key: 'token',
 						value: data
 					})
-					this.$store.dispatch('getUserInfo')
+					this.$store.dispatch('init')
 					ws.bind()
 					uni.switchTab({
 						url: '/pages/chats/chats'
