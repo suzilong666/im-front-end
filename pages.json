@@ -29,8 +29,7 @@
 		{
 			"path": "pages/me/me",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -76,11 +75,17 @@
 			}
 		},
 		{
-			"path" : "pages/initiateGroupChat/initiateGroupChat",
-			"style" : 
-			{
-				"navigationBarTitleText" : "发起群聊",
-				"enablePullDownRefresh" : false
+			"path": "pages/initiateGroupChat/initiateGroupChat",
+			"style": {
+				"navigationBarTitleText": "发起群聊",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/groupChat/groupChat",
+			"style": {
+				"navigationBarTitleText": "群聊",
+				"enablePullDownRefresh": false
 			}
 		}
 	],

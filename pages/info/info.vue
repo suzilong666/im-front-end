@@ -8,8 +8,7 @@
 					</view>
 				</template>
 				<template slot="footer">
-					<image :src="this.$store.state.userInfo.avatar"
-						style="width: 80rpx;height: 80rpx; border-radius: 8rpx;"></image>
+					<avatar :src="this.$store.state.userInfo.avatar"></avatar>
 				</template>
 			</uni-list-item>
 
@@ -32,6 +31,7 @@
 		upload,
 		updateUserInfo
 	} from '@/api/api';
+	
 	export default {
 		data() {
 			return {

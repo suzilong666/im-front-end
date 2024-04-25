@@ -1,10 +1,17 @@
 <template>
 	<view class="container">
 		<view class="chat-history-list">
-			<view class="item" :class="[item.sender_id==userInfo.id?'right':'left']" v-for="item in chatHistory"
-				:key="item.id">
-				{{item.sender_id}}:{{item.message}}
-			</view>
+			<template v-for="item in chatHistory">
+				<view v-if="item.sender_id==userInfo.id" class="item right">
+					<u-avatar :src="$store.state.userInfo.avatar" shape="square" size="30"></u-avatar>
+					<view class="">
+						{{item.message}}
+					</view>
+				</view>
+				<view v-else class="item">
+					{{item.sender_id}}:{{item.message}}
+				</view>
+			</template>
 		</view>
 		<view class="bottom">
 			<input v-model="message" />
@@ -35,11 +42,13 @@
 			chatHistory() {
 				const {
 					id,
-					type
+					type = 1
 				} = this
-				const chat = this.$store.state.chatList.find(item => type == 1 ? item.friend_id : item.group_id == id)
-				if (chat && Array.isArray(chat.history)) return chat.history
-				return []
+				const {
+					getFriendHistory,
+					getGroupChatHistory
+				} = this.$store.getters
+				return type == 1 ? getFriendHistory(id) : getGroupChatHistory(id)
 			}
 		},
 		onLoad({
@@ -51,7 +60,7 @@
 
 			if (type == 1) {
 				// 私聊
-				const friend = this.$store.getters.getFriendById(id)
+				const friend = this.$store.getters.getFriend(id)
 				if (friend) {
 					uni.setNavigationBarTitle({
 						title: friend.nickname || friend.username
@@ -60,7 +69,7 @@
 				this.$store.dispatch('getChatHistory', id)
 			} else {
 				// 群聊
-				const group = this.$store.getters.getGroupChatById(id)
+				const group = this.$store.getters.getGroupChat(id)
 				if (group) {
 					uni.setNavigationBarTitle({
 						title: group.name
@@ -82,14 +91,18 @@
 						message
 					}).then(({
 						data
-					}) => {})
+					}) => {
+						this.$store.dispatch('updateMessage', data)
+					})
 				} else {
 					sendToGroup({
 						group_id: id,
 						message
 					}).then(({
 						data
-					}) => {})
+					}) => {
+						// this.$store.dispatch('updateGroupMessage', data)
+					})
 				}
 
 				this.message = ''
@@ -100,9 +113,15 @@
 
 <style lang="scss">
 	.chat-history-list {
+		padding: 0 16rpx;
+		
+		.item {
+			display: flex;
+		}
 
 		.right {
-			text-align: right;
+			flex-direction: row-reverse;
+
 		}
 	}
 

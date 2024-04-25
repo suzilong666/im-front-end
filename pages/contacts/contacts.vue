@@ -5,12 +5,13 @@
 				<u-cell title="新的朋友" @tap="navigateTo('/pages/newFriend/newFriend')">
 					<u-avatar slot="icon" shape="square" size="35" customStyle="margin: -3px 5px -3px 0"></u-avatar>
 				</u-cell>
-				<u-cell title="群聊" @tap="navigateTo('/pages/newFriend/newFriend')">
+				<u-cell title="群聊" @tap="navigateTo('/pages/groupChat/groupChat')">
 					<u-avatar slot="icon" shape="square" size="35" customStyle="margin: -3px 5px -3px 0"></u-avatar>
 				</u-cell>
 				<u-cell v-for="item in $store.state.friendList" :title="item.nickname"
 					@tap="navigateTo(`/pages/friendDetail/friendDetail?id=${item.id}`)">
-					<u-avatar slot="icon" shape="square" size="35" customStyle="margin: -3px 5px -3px 0"></u-avatar>
+					<u-avatar :src="item.avatar" slot="icon" shape="square" size="35"
+						customStyle="margin: -3px 5px -3px 0"></u-avatar>
 				</u-cell>
 			</u-list-item>
 		</u-list>

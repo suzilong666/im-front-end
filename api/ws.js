@@ -9,10 +9,15 @@ class Ws {
 
 	clientId = '';
 
+	timer = null; // 心跳定时器
+
 	constructor() {
 		this.connect()
 	}
 
+	/**
+	 * 连接ws
+	 */
 	connect() {
 		const url = 'ws://127.0.0.1:3000';
 
@@ -20,9 +25,23 @@ class Ws {
 			url,
 			success: () => {
 				console.log('ws连接成功');
+
+				// 定时发送心跳
+				if (this.timer) {
+					clearInterval(this.timer)
+					this.timer = null
+				}
+				this.timer = setInterval(() => {
+					if (!this.socketTask) return
+					this.socketTask.send({
+						data: '{"type":"ping"}'
+					})
+				}, 1000 * 30)
 			},
-			fail: () => {
+			fail: (e) => {
+				console.error('ws连接失败', e);
 				setTimeout(() => {
+					console.log('ws尝试重新连接');
 					this.connect()
 				}, 1000)
 			},
@@ -47,6 +66,10 @@ class Ws {
 		this.socketTask = socketTask
 	}
 
+	/**
+	 * ws返回的clientId和uid绑定
+	 * @param {Object} clientId
+	 */
 	bind(clientId) {
 		const {
 			token
@@ -60,15 +83,20 @@ class Ws {
 		})
 	}
 
-	message({
-		message,
-		sender_id, // 发送者id
-		receiver_id, //接受者id
-		type, // 1私聊，2群聊
-	}) {
-		const {
-			chatList
-		} = store.state;
+	/**
+	 * 收到消息
+	 * @param {Object} data
+	 */
+	message(data) {
+		store.dispatch('updateMessage', data)
+	}
+
+	/**
+	 * 收到群消息
+	 * @param {Object} data
+	 */
+	groupMessage(data) {
+		store.dispatch('updateGroupMessage', data)
 	}
 }
 

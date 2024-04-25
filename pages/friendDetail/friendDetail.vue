@@ -32,7 +32,7 @@
 			},
 			goChat() {
 				uni.navigateTo({
-					url: `/pages/chat/chat?id=${this.friendDetail.id}`
+					url: `/pages/chat/chat?id=${this.friendDetail.id}&type=1`
 				})
 			}
 		}
