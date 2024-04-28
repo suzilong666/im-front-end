@@ -29,6 +29,7 @@ export const getChatList = (data) => get('/api/chat/getChatList', data)
 
 // 群聊
 export const getGroupChatList = (data) => get('/api/groupChat/getGroupChatList', data)
+export const getGroupChatMemberList = (data) => get('/api/groupChat/getGroupChatMemberList', data)
 export const getGroupChatHistory = (data) => get('/api/groupChat/getGroupChatHistory', data)
 export const createGroupChat = (data) => post('/api/groupChat/createGroupChat', data)
 export const sendToGroup = (data) => post('/api/groupChat/send', data)

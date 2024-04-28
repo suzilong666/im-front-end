@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<navigator class="user" url="/pages/info/info">
-			<u-avatar :src="this.$store.state.userInfo.avatar" shape="square" size="50"></u-avatar>
+			<u-avatar :src="formatUrl(this.$store.state.userInfo.avatar)" shape="square" size="50"></u-avatar>
 
 			<view style="margin-left: 40rpx;">
 				<u--text :text="userInfo.nickname" bold size="18"></u--text>

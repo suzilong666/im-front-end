@@ -9,13 +9,9 @@ import {
 	getGroupChatHistory,
 	getChatList,
 	getConfig,
-	getChatHistory
+	getChatHistory,
+	getGroupChatMemberList
 } from '@/api/api';
-
-import {
-	isAbsolutePath,
-	joinUrls
-} from '@/utils/index.js'
 
 Vue.use(Vuex); //vue的插件机制
 
@@ -30,6 +26,7 @@ const store = new Vuex.Store({
 		groupChatList: [], // 群聊列表
 		friendHistoryMap: {}, // 好友聊天记录
 		groupChatHistoryMap: {}, // 群聊聊天记录
+		groupChatMemberMap: {}, // 群聊成员映射 {groupId => []}
 	},
 	mutations: {
 		set(state, {
@@ -52,8 +49,11 @@ const store = new Vuex.Store({
 		getGroupChat: (state) => (id) => {
 			return state.groupChatList.find(item => item.id == id)
 		},
-		getGroupChatHistory: (state) => (id) => {
-			return state.groupChatHistoryMap[id] || []
+		getGroupChatMemberList: (state) => (groupId) => {
+			return state.groupChatMemberMap[groupId] || []
+		},
+		getGroupChatHistory: (state) => (groupId) => {
+			return state.groupChatHistoryMap[groupId] || []
 		},
 	},
 	actions: {
@@ -83,7 +83,6 @@ const store = new Vuex.Store({
 			const {
 				data
 			} = await getUserInfo()
-			data.avatar = isAbsolutePath(data.avatar) ? data.avatar : joinUrls(getters.baseUrl, data.avatar) || ''
 			commit('set', {
 				key: 'userInfo',
 				value: data
@@ -96,9 +95,6 @@ const store = new Vuex.Store({
 			const {
 				data
 			} = await getFriendList()
-			data.forEach(item => {
-				item.avatar = isAbsolutePath(item.avatar) ? item.avatar : joinUrls(getters.baseUrl, item.avatar) || ''
-			})
 			commit('set', {
 				key: 'friendList',
 				value: data
@@ -113,6 +109,20 @@ const store = new Vuex.Store({
 			commit('set', {
 				key: 'groupChatList',
 				value: data
+			})
+		},
+		/**
+		 * 获取群聊成员列表
+		 */
+		async getGroupChatMemberList({commit, state}, group_id) {
+			const {
+				data
+			} = await getGroupChatMemberList({group_id})
+			const {groupChatMemberMap} = state
+			groupChatMemberMap[group_id] = data
+			commit('set', {
+				key: 'groupChatMemberMap',
+				value: groupChatMemberMap
 			})
 		},
 		async getChatList({

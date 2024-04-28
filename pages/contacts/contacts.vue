@@ -10,7 +10,7 @@
 				</u-cell>
 				<u-cell v-for="item in $store.state.friendList" :title="item.nickname"
 					@tap="navigateTo(`/pages/friendDetail/friendDetail?id=${item.id}`)">
-					<u-avatar :src="item.avatar" slot="icon" shape="square" size="35"
+					<u-avatar :src="formatUrl(item.avatar)" slot="icon" shape="square" size="35"
 						customStyle="margin: -3px 5px -3px 0"></u-avatar>
 				</u-cell>
 			</u-list-item>

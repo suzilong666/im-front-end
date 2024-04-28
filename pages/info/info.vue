@@ -8,7 +8,7 @@
 					</view>
 				</template>
 				<template slot="footer">
-					<avatar :src="this.$store.state.userInfo.avatar"></avatar>
+					<u-avatar :src="formatUrl(this.$store.state.userInfo.avatar)" shape="square"></u-avatar>
 				</template>
 			</uni-list-item>
 

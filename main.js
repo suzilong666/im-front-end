@@ -3,6 +3,9 @@ import Vue from 'vue'
 import App from './App'
 import store from './store'
 
+import mixin from './mixin/index.js'
+Vue.mixin(mixin)
+
 import uView from '@/uni_modules/uview-ui'
 Vue.use(uView)
 
@@ -17,7 +20,6 @@ Vue.prototype.$showToast = (title, icon = 'none') => {
 Vue.config.productionTip = false
 
 App.mpType = 'app'
-
 
 const app = new Vue({
 	store,
