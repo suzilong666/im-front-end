@@ -3,7 +3,8 @@
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -15,15 +16,13 @@
 		{
 			"path": "pages/contacts/contacts",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationStyle": "custom"
 			}
 		},
 		{
 			"path": "pages/discover/discover",
 			"style": {
-				"navigationBarTitleText": "",
-				"enablePullDownRefresh": false
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -88,6 +87,19 @@
 				"navigationBarTitleText": "群聊",
 				"enablePullDownRefresh": false
 			}
+		},
+		{
+			"path": "pages/moment/moment",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/postMoment/postMoment",
+			"style" : 
+			{
+				"navigationStyle": "custom"
+			}
 		}
 	],
 	"tabBar": { //底部
@@ -124,7 +136,7 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#fff",
 		"backgroundColor": "#F8F8F8",
 		"app-plus": {
 			"background": "#efeff4"

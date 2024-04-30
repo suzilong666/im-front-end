@@ -65,12 +65,12 @@ export function post(url, data) {
 	})
 }
 
-export function upload(url, file) {
+export function upload(url, filePath) {
 	const token = store.state.token;
 	return new Promise((resolve, reject) => {
 		uni.uploadFile({
 			url,
-			filePath: file,
+			filePath,
 			name: 'file',
 			header: {
 				'Authorization': token

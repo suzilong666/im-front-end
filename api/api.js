@@ -1,7 +1,7 @@
 import {
 	get,
 	post,
-	upload as uploadFn
+	upload as uploadFn,
 } from './request.js'
 
 // 用户模块
@@ -34,6 +34,20 @@ export const getGroupChatHistory = (data) => get('/api/groupChat/getGroupChatHis
 export const createGroupChat = (data) => post('/api/groupChat/createGroupChat', data)
 export const sendToGroup = (data) => post('/api/groupChat/send', data)
 
+// 朋友圈
+export const postMoment = (data) => post('/api/moment/createMoment', data)
+export const getMomentList = (data) => get('/api/moment/getMomentList', data)
+
 // common
 export const upload = (data) => uploadFn('/api/common/upload', data)
+export const batchUpload = (fileList) => {
+	return new Promise((resolve, reject) => {
+		const p = fileList.map(file => upload(file))
+		Promise.all(p).then((res) => {
+			resolve(res.map(item => item.data))
+		}).catch(() => {
+			reject()
+		})
+	})
+}
 export const getConfig = (data) => get('/api/common/getConfig', data)
