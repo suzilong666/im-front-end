@@ -21,8 +21,8 @@
 
 					<view class="bottom">
 						<view class="">{{item.create_time}}</view>
-						<view class="icon">
-							<view class="popup">
+						<view class="icon" @tap="showPopup(item)">
+							<view class="popup" v-if="item.isShowPopup">
 								<view class="left">
 									<u-icon name="heart" color="#fff"></u-icon>
 									<view class="">赞</view>
@@ -57,7 +57,15 @@
 		onShow() {
 			this.getMomentList()
 		},
+		onPageScroll() {
+			this.momentList.forEach(item => {
+				this.$set(item, 'isShowPopup', false)
+			})
+		},
 		methods: {
+			showPopup(item) {
+				this.$set(item, 'isShowPopup', !item.isShowPopup)
+			},
 			async getMomentList() {
 				const { data } = await getMomentList({ page: this.page })
 				this.total = data.total
@@ -171,8 +179,8 @@
 								display: flex;
 								justify-content: center;
 								align-items: center;
-								
-								.u-icon{
+
+								.u-icon {
 									margin-right: 10rpx;
 								}
 							}
