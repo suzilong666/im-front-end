@@ -8,7 +8,7 @@ export function isAbsolutePath(path) {
 	}
 }
 
-export function joinUrls(baseUrl, pathUrl) {
+export function joinUrls(baseUrl = '', pathUrl = '') {
 	// 移除基础 URL 结尾的斜杠和路径 URL 开头的斜杠
 	const cleanedBaseUrl = baseUrl.replace(/\/$/, '');
 	const cleanedPathUrl = pathUrl.replace(/^\//, '');

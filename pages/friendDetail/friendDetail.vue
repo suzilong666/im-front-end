@@ -1,27 +1,31 @@
 <template>
 	<view class="container">
 		<view class="friend-info">
-			<u-avatar :src="formatUrl(friend.avatar)" shape="square" size="70" style="margin-right: 40rpx;"></u-avatar>
-			
+			<u-avatar :src="formatUrl(friend.avatar)" shape="square" size="55" style="margin-right: 40rpx;"></u-avatar>
+
 			<view v-if="friend.remark" class="">
 				<view class="title">{{friend.remark}}</view>
-				<view class="text">{{friend.nickname}}</view>
-				<view class="text">{{friend.username}}</view>
+				<view class="text">{{'昵称：' +friend.nickname}}</view>
+				<view class="text">{{'账号：' + friend.username}}</view>
 			</view>
 			<view v-else class="">
-				<u--text :text="friend.nickname" bold size="18" customStyle="margin-bottom: 15rpx;"></u--text>
-				<u--text :text="'账号：' + friend.username" size="16" color="#999"></u--text>
+				<view class="title">{{friend.nickname}}</view>
+				<view class="text">{{'账号：' + friend.username}}</view>
 			</view>
 		</view>
-		
+
 		<uni-list>
-			<uni-list-item showArrow title="设置备注"/>
-			<uni-list-item showArrow title="朋友权限"/>
+			<template v-if="isFriend">
+				<uni-list-item showArrow title="设置备注" clickable @click="$refs.inputDialog.open()" />
+				<uni-list-item showArrow title="朋友圈" />
+				<!-- <uni-list-item showArrow title="朋友权限" />
+				<u-gap height="10" bgColor="#eeeeee"></u-gap>
+				<uni-list-item showArrow title="更多信息" /> -->
+			</template>
+
 			<u-gap height="10" bgColor="#eeeeee"></u-gap>
-			<uni-list-item showArrow title="朋友圈" />
-			<uni-list-item showArrow title="更多信息" />
-			<u-gap height="10" bgColor="#eeeeee"></u-gap>
-			<uni-list-item :to="`/pages/chat/chat?id=${id}&type=1`" clickable>
+
+			<uni-list-item v-if="isFriend" :to="`/pages/chat/chat?id=${id}&type=1`" clickable>
 				<template v-slot:body>
 					<view class="send">
 						<u-icon name="chat" color="#5f6690" size="28"></u-icon>
@@ -29,28 +33,56 @@
 					</view>
 				</template>
 			</uni-list-item>
+			<uni-list-item v-else :to="`/pages/ApplyToAddFriend/ApplyToAddFriend?id=${id}`" clickable>
+				<template v-slot:body>
+					<view class="send">添加到通讯录</view>
+				</template>
+			</uni-list-item>
 		</uni-list>
+
+		<!-- 修改名字 -->
+		<uni-popup ref="inputDialog" type="dialog">
+			<uni-popup-dialog ref="inputClose" mode="input" title="输入备注" placeholder="请输入备注" @confirm="updateRemark"></uni-popup-dialog>
+		</uni-popup>
 	</view>
 </template>
 
 <script>
+	import {
+		getUserInfo,
+		updateFriendInfo,
+	} from '@/api/api';
 	export default {
 		data() {
 			return {
 				id: 0,
+				isFriend: true,
+				friend: {}
 			};
-		},
-		computed:{
-			friend() {
-				return this.$store.getters.getFriend(this.id) || {}
-			}
 		},
 		onLoad({
 			id
 		}) {
 			this.id = id
+			const friend = this.$store.getters.getFriend(this.id)
+			if (friend) {
+				this.friend = friend
+			} else {
+				this.getUserInfo()
+				this.isFriend = false
+			}
 		},
 		methods: {
+			async getUserInfo() {
+				const { data } = await getUserInfo({ id: this.id })
+				this.friend = data
+			},
+			async updateRemark(remark) {
+				if (!remark) return
+				const { data } = await updateFriendInfo({ id: this.id, remark })
+				this.friend.remark = remark
+				this.$store.dispatch('getFriendList')
+			},
 			goChat() {
 				uni.navigateTo({
 					url: `/pages/chat/chat?id=${this.friendDetail.id}&type=1`
@@ -61,31 +93,40 @@
 </script>
 
 <style>
-	.uni-list-item__container{
+	.uni-list-item__container {
 		padding: 40rpx 30rpx;
 	}
 </style>
 <style lang="scss" scoped>
-// page{
-// 	background-color: #ededed;
-// }
-.container{
-	background-color: white;
-}
-.friend-info{
-	display: flex;
-	padding: 30rpx 30rpx 60rpx 30rpx;
-	
-	.title{
+	// page{
+	// 	background-color: #ededed;
+	// }
+	.container {
+		background-color: white;
 	}
-	
-}
-.send{
-	width: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: #5f6690;
-	padding: 15rpx 0;
-}
+
+	.friend-info {
+		display: flex;
+		padding: 30rpx 30rpx 60rpx 30rpx;
+
+		.title {
+			font-weight: 600;
+			font-size: 32rpx;
+		}
+
+		.text {
+			font-size: 24rpx;
+			color: #999;
+			padding-top: 8rpx;
+		}
+	}
+
+	.send {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		color: #5f6690;
+		padding: 15rpx 0;
+	}
 </style>

@@ -10,7 +10,8 @@ import {
 	getChatList,
 	getConfig,
 	getChatHistory,
-	getGroupChatMemberList
+	getGroupChatMemberList,
+	getApplicationCount
 } from '@/api/api';
 
 Vue.use(Vuex); //vue的插件机制
@@ -27,6 +28,8 @@ const store = new Vuex.Store({
 		friendHistoryMap: {}, // 好友聊天记录
 		groupChatHistoryMap: {}, // 群聊聊天记录
 		groupChatMemberMap: {}, // 群聊成员映射 {groupId => []}
+		chatsUnreadQuantity: 0, // 消息页面未读消息数量
+		contactsUnreadQuantity: 0, // 通讯录页面未读消息数量
 	},
 	mutations: {
 		set(state, {
@@ -42,6 +45,11 @@ const store = new Vuex.Store({
 		},
 		getFriend: (state) => (id) => {
 			return state.friendList.find(item => item.id == id)
+		},
+		getNameByUid: (state) => (id) => {
+			if (id == state.userInfo.id) return state.userInfo.nickname;
+			const friend = state.friendList.find(item => item.id == id)
+			return friend ? (friend.remark || friend.nickname) : ''
 		},
 		getFriendHistory: (state) => (id) => {
 			return state.friendHistoryMap[id] || []
@@ -66,6 +74,24 @@ const store = new Vuex.Store({
 			dispatch('getUserInfo');
 			dispatch('getFriendList');
 			dispatch('getGroupChatList');
+			dispatch('getApplicationCount');
+		},
+		async getApplicationCount({ commit }) {
+			const { data } = await getApplicationCount()
+			commit('set', {
+				key: 'contactsUnreadQuantity',
+				value: data
+			})
+			if (data > 0) {
+				uni.setTabBarBadge({
+					index: 1,
+					text: String(data)
+				})
+			} else {
+				uni.removeTabBarBadge({
+					index: 1
+				})
+			}
 		},
 		async getConfig(context) {
 			const {
@@ -99,6 +125,7 @@ const store = new Vuex.Store({
 				key: 'friendList',
 				value: data
 			})
+			return data
 		},
 		async getGroupChatList({
 			commit
@@ -110,15 +137,16 @@ const store = new Vuex.Store({
 				key: 'groupChatList',
 				value: data
 			})
+			return data
 		},
 		/**
 		 * 获取群聊成员列表
 		 */
-		async getGroupChatMemberList({commit, state}, group_id) {
+		async getGroupChatMemberList({ commit, state }, group_id) {
 			const {
 				data
-			} = await getGroupChatMemberList({group_id})
-			const {groupChatMemberMap} = state
+			} = await getGroupChatMemberList({ group_id })
+			const { groupChatMemberMap } = state
 			groupChatMemberMap[group_id] = data
 			commit('set', {
 				key: 'groupChatMemberMap',
@@ -138,6 +166,7 @@ const store = new Vuex.Store({
 				if (item.type == 1) {
 					// 私聊
 					const friend = getters.getFriend(item.friend_id)
+					debugger
 					if (friend) {
 						title = friend.remark || friend.nickname || friend.username || ''
 						avatar = friend.avatar
@@ -178,9 +207,9 @@ const store = new Vuex.Store({
 		 * @param {Object} context
 		 * @param {Object} id 好友uid
 		 */
-		async getGroupChatHistory({commit,state}, id) {
+		async getGroupChatHistory({ commit, state }, id) {
 			if (!id) return
-			const {data} = await getGroupChatHistory({
+			const { data } = await getGroupChatHistory({
 				group_id: id
 			})
 			const {

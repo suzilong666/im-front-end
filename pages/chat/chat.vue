@@ -94,8 +94,6 @@
 		}) {
 			this.id = id
 			this.type = type
-			
-			console.log(this.chatHistory);
 
 			if (type == 1) {
 				// 私聊

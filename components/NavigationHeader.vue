@@ -1,17 +1,13 @@
 <template>
-	<view class="container" @click="clickHandel">
-		<view class="left"></view>
-
-		<view class="title">{{title}}</view>
-
-		<view class="right">
+	<u-navbar :title="title" leftIcon="">
+		<template slot="right">
 			<navigator url="/pages/initiateGroupChat/initiateGroupChat">
 				<view class="dropdown">
 					<u-icon name="plus-circle" size="25"></u-icon>
 				</view>
 			</navigator>
-		</view>
-	</view>
+		</template>
+	</u-navbar>
 </template>
 
 <script>
@@ -29,42 +25,11 @@
 			};
 		},
 		methods: {
-			clickHandel() {
-				console.log(1);
-			}
+
 		},
 	}
 </script>
 
 <style lang="scss" scoped>
-	.container {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
 
-		width: 100vw;
-		height: 100rpx;
-		background-color: #e2eade;
-
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-
-		.right {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-
-			.dropdown {
-				position: relative;
-
-				.menu {
-					z-index: 99;
-					position: absolute;
-
-				}
-			}
-		}
-	}
 </style>

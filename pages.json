@@ -77,8 +77,7 @@
 		{
 			"path": "pages/initiateGroupChat/initiateGroupChat",
 			"style": {
-				"navigationBarTitleText": "发起群聊",
-				"enablePullDownRefresh": false
+				"navigationStyle": "custom"
 			}
 		},
 		{
@@ -95,10 +94,17 @@
 			}
 		},
 		{
-			"path" : "pages/postMoment/postMoment",
+			"path": "pages/postMoment/postMoment",
+			"style": {
+				"navigationStyle": "custom"
+			}
+		},
+		{
+			"path" : "pages/ApplyToAddFriend/ApplyToAddFriend",
 			"style" : 
 			{
-				"navigationStyle": "custom"
+				"navigationBarTitleText" : "申请添加朋友",
+				"enablePullDownRefresh" : false
 			}
 		}
 	],

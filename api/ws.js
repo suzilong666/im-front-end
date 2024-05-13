@@ -98,6 +98,13 @@ class Ws {
 	groupMessage(data) {
 		store.dispatch('updateGroupMessage', data)
 	}
+
+	/**
+	 * 好友申请
+	 */
+	friendApplication() {
+		store.dispatch('getApplicationCount')
+	}
 }
 
 export const ws = new Ws();

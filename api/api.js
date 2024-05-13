@@ -16,8 +16,11 @@ export const register = (data) => post('/api/auth/register', data)
 // 好友
 export const addFriend = (data) => get('/api/friend/add', data)
 export const getApplication = (data) => get('/api/friend/application', data)
+export const getApplicationCount = (data) => get('/api/friend/applicationCount', data)
 export const getApplicationRecord = (data) => get('/api/friend/applicationRecord', data)
-export const accept = (data) => get('/api/friend/accept', data)
+export const accept = (data) => post('/api/friend/accept', data)
+export const refuse = (data) => post('/api/friend/refuse', data)
+export const updateFriendInfo = (data) => post('/api/friend/updateFriendInfo', data)
 export const getFriendList = (data) => get('/api/friend/list', data)
 export const getFriendDetail = (data) => get('/api/friend/friendDetail', data)
 
@@ -37,6 +40,9 @@ export const sendToGroup = (data) => post('/api/groupChat/send', data)
 // 朋友圈
 export const postMoment = (data) => post('/api/moment/createMoment', data)
 export const getMomentList = (data) => get('/api/moment/getMomentList', data)
+export const like = (data) => post('/api/moment/like', data)
+export const comment = (data) => post('/api/moment/comment', data)
+export const deleteComment = (data) => post('/api/moment/deleteComment', data)
 
 // common
 export const upload = (data) => uploadFn('/api/common/upload', data)

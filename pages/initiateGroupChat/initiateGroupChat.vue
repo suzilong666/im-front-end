@@ -1,10 +1,11 @@
 <template>
-	<view>
-		<friendList @change="change"></friendList>
-
-		<view class="bottom">
-			<u-button size="mini" text="完成" @click="createGroupChat"></u-button>
-		</view>
+	<view style="padding-top: 88rpx;">
+		<u-navbar title="发起群聊" :autoBack="true">
+			<template slot="right">
+				<u-button :disabled="selectFriend.length < 2" type="success" size="mini" text="完成" @tap="createGroupChat"></u-button>
+			</template>
+		</u-navbar>
+		<friendList :isShowCheckbox="true" @change="change"></friendList>
 	</view>
 </template>
 
@@ -26,16 +27,19 @@
 			change(selectFriend) {
 				this.selectFriend = selectFriend
 			},
-			createGroupChat() {
+			async createGroupChat() {
 				const {
 					selectFriend
 				} = this
-				createGroupChat({
-					groupMembers: selectFriend
-				}).then(({
-					data
-				}) => {
-					
+				const { data } = await createGroupChat({ groupMembers: selectFriend })
+				const { groupChatList } = this.$store.state
+				groupChatList.push(data)
+				this.$store.commit('set', {
+					key: 'groupChatList',
+					value: groupChatList
+				})
+				uni.redirectTo({
+					url: `/pages/chat/chat?id=${data.id}&type=2`
 				})
 			}
 		},
