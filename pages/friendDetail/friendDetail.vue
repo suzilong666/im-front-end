@@ -17,7 +17,8 @@
 		<uni-list>
 			<template v-if="isFriend">
 				<uni-list-item showArrow title="设置备注" clickable @click="$refs.inputDialog.open()" />
-				<uni-list-item showArrow title="朋友圈" />
+				<uni-list-item showArrow title="朋友圈" clickable :to="`/pages/moment/moment?friendId=${id}`" />
+				<uni-list-item showArrow title="删除好友" clickable @click="isShowConfirmModal = true" />
 				<!-- <uni-list-item showArrow title="朋友权限" />
 				<u-gap height="10" bgColor="#eeeeee"></u-gap>
 				<uni-list-item showArrow title="更多信息" /> -->
@@ -44,6 +45,10 @@
 		<uni-popup ref="inputDialog" type="dialog">
 			<uni-popup-dialog ref="inputClose" mode="input" title="输入备注" placeholder="请输入备注" @confirm="updateRemark"></uni-popup-dialog>
 		</uni-popup>
+
+		<!-- 删除好友确认框 -->
+		<u-modal :show="isShowConfirmModal" title="删除联系人" :content='`将联系人“${friend.remark || friend.nickname}”删除，将同时删除与该联系人的聊天记录`' showCancelButton confirmColor="red" :closeOnClickOverlay="true"
+			@cancel="isShowConfirmModal = false" @confirm="deleteFriend" @close="isShowConfirmModal = false"></u-modal>
 	</view>
 </template>
 
@@ -51,13 +56,15 @@
 	import {
 		getUserInfo,
 		updateFriendInfo,
+		deleteFriend,
 	} from '@/api/api';
 	export default {
 		data() {
 			return {
 				id: 0,
 				isFriend: true,
-				friend: {}
+				friend: {},
+				isShowConfirmModal: false
 			};
 		},
 		onLoad({
@@ -87,6 +94,18 @@
 				uni.navigateTo({
 					url: `/pages/chat/chat?id=${this.friendDetail.id}&type=1`
 				})
+			},
+			async deleteFriend() {
+				await deleteFriend({ id: this.id })
+				this.isShowConfirmModal = false
+				this.$store.dispatch('getFriendList')
+				this.$store.dispatch('getChatList')
+				this.$showToast('删除成功')
+				setTimeout(() => {
+					uni.switchTab({
+						url: '/pages/chats/chats'
+					})
+				}, 1000)
 			}
 		}
 	}

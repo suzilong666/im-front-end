@@ -2,8 +2,8 @@
 	<view class="container">
 		<scroll-view :scroll-top="scrollTop" scroll-y="true" :style="{height: `${scrollViewHeight}px`}" @scroll="scroll" @tap="closeBottom">
 			<view class="chat-history-list" id="chat-history-list">
-				<view v-for="item in chatHistory" :class="[item.sender_id == userInfo.id ? 'right' : '', 'item']" >
-					<u-avatar :src="formatUrl(getAvatar(item))" shape="square" size="35"></u-avatar>
+				<view v-for="item in chatHistory" :class="[item.sender_id == userInfo.id ? 'right' : '', 'item']">
+					<u-avatar :src="formatUrl(getAvatar(item))" shape="square" size="35" @tap="toFriendDetail(item)"></u-avatar>
 					<view v-if="item.type == 1" class="message">
 						{{item.message}}
 					</view>
@@ -12,20 +12,20 @@
 				</view>
 			</view>
 		</scroll-view>
-		
+
 		<view class="bottom" id="bottom">
 			<view class="input-box">
 				<u--textarea v-model="message" autoHeight @confirm="send" @focus="closeBottom"></u--textarea>
 				<u-icon name="plus-circle" color="#000" size="28" @tap="showEmojiList"></u-icon>
 				<u-icon name="plus-circle" color="#000" size="28" @tap="showFunctionList"></u-icon>
 			</view>
-			
+
 			<scroll-view v-if="isShowEmojiList" :scroll-y="true" class="emoji-container">
 				<view class="emoji-list">
-					<view class="emoji-item" v-for="(item) in emojiList" @tap="message+=item" >{{ item }}</view>
+					<view class="emoji-item" v-for="(item) in emojiList" @tap="message+=item">{{ item }}</view>
 				</view>
 			</scroll-view>
-			
+
 			<view v-if="isShowFunctionList" class="function-list">
 				<view class="item" @tap="sendImage">
 					<view class="icon-box">
@@ -47,6 +47,7 @@
 <script>
 	import {
 		send,
+		read,
 		sendToGroup,
 		getChatHistory,
 		upload
@@ -62,7 +63,9 @@
 				scrollTop: 0,
 				isShowFunctionList: false,
 				isShowEmojiList: false,
-				emojiList: ['😁', '😂', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😌', '😍', '😏', '😒', '😓', '😔', '😖', '😘', '😚', '😜', '😝', '😞', '😠', '😡', '😢', '😣', '😤', '😥', '😨', '😩', '😪', '😫', '😭', '😰', '😱', '😲', '😳', '😵', '😷', '😸', '😹', '😺', '😻', '😼', '😽', '😾', '😿', '🙀', '🙅', '🙆', '🙇', '🙈', '🙉', '🙊', '🙋', '🙌', '🙍', '🙎', '🙏'],
+				emojiList: ['😁', '😂', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😌', '😍', '😏', '😒', '😓', '😔', '😖', '😘', '😚', '😜', '😝', '😞', '😠', '😡', '😢', '😣', '😤', '😥', '😨', '😩',
+					'😪', '😫', '😭', '😰', '😱', '😲', '😳', '😵', '😷', '😸', '😹', '😺', '😻', '😼', '😽', '😾', '😿', '🙀', '🙅', '🙆', '🙇', '🙈', '🙉', '🙊', '🙋', '🙌', '🙍', '🙎', '🙏'
+				],
 			};
 		},
 		computed: {
@@ -94,15 +97,12 @@
 		}) {
 			this.id = id
 			this.type = type
-
+			this.read()
 			if (type == 1) {
 				// 私聊
-				const friend = this.$store.getters.getFriend(id)
-				if (friend) {
-					uni.setNavigationBarTitle({
-						title: friend.nickname || friend.username
-					})
-				}
+				uni.setNavigationBarTitle({
+					title: this.$store.getters.getNameByUid(id)
+				})
 				this.$store.dispatch('getChatHistory', id)
 			} else {
 				// 群聊
@@ -116,12 +116,27 @@
 				this.$store.dispatch('getGroupChatMemberList', id)
 			}
 		},
+		onUnload() {
+			this.read()
+		},
 		onReady() {
 			this.getScrollViewHeight()
 			this.scrollBottom()
 		},
 		methods: {
-			scroll(e){
+			async read() {
+				if (this.type == 1) {
+					await read({ friend_id: this.id })
+					const { chatList } = this.$store.state
+					const chat = chatList.find(item => item.friend_id == this.id)
+					if (chat) chat.unread_quantity = 0
+					this.$store.commit('set', {
+						key: 'chatList',
+						value: chatList
+					})
+				}
+			},
+			scroll(e) {
 				// this.isShowEmojiList = false
 				// this.isShowFunctionList = false
 			},
@@ -144,16 +159,16 @@
 			},
 			scrollBottom() {
 				this.$nextTick(() => {
-					uni.createSelectorQuery().select("#chat-history-list").boundingClientRect(({height}) => {
-						if (this.scrollTop == height) return  this.scrollTop = height - 1
+					uni.createSelectorQuery().select("#chat-history-list").boundingClientRect(({ height }) => {
+						if (this.scrollTop == height) return this.scrollTop = height - 1
 						this.scrollTop = height
 					}).exec();
 				})
 			},
 			getScrollViewHeight() {
 				this.$nextTick(() => {
-					uni.createSelectorQuery().select("#bottom").boundingClientRect(({height}) => {
-						const {windowHeight} = uni.getSystemInfoSync()
+					uni.createSelectorQuery().select("#bottom").boundingClientRect(({ height }) => {
+						const { windowHeight } = uni.getSystemInfoSync()
 						this.scrollViewHeight = windowHeight - height
 					}).exec();
 				})
@@ -178,8 +193,7 @@
 						type: messageType
 					}).then(({
 						data
-					}) => {
-					})
+					}) => {})
 				}
 
 				this.message = ''
@@ -211,47 +225,56 @@
 			getAvatar({
 				sender_id
 			}) {
-				const {id,avatar} = this.userInfo
+				const { id, avatar } = this.userInfo
 				if (sender_id == id) return avatar
 				if (this.type == 1) {
-					 return this.$store.getters.getFriend(this.id)?.avatar || ''
+					return this.$store.getters.getFriend(this.id)?.avatar || ''
 				} else {
-					const {groupChatMemberList} = this
+					const { groupChatMemberList } = this
 					const user = groupChatMemberList.find(item => item.id == sender_id)
-					return user? user.avatar : ''
+					return user ? user.avatar : ''
 				}
+			},
+			toFriendDetail({ sender_id }) {
+				if (sender_id == this.userInfo.id) return
+				uni.navigateTo({
+					url: `/pages/friendDetail/friendDetail?id=${sender_id}`
+				})
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	page{
+	page {
 		background-color: #ededed;
 	}
+
 	.chat-history-list {
 		padding: 16rpx;
+
 		.item {
 			display: flex;
 			margin-bottom: 16rpx;
-			.message{
+
+			.message {
 				max-width: calc(100% - 200rpx);
 				padding: 18rpx 20rpx;
 				border-radius: 8rpx;
 				background-color: #fff;
-				margin:0 70rpx 0 20rpx;
+				margin: 0 70rpx 0 20rpx;
 				font-size: 28rpx;
 				letter-spacing: 2rpx;
 				word-wrap: break-word;
 			}
-			
-			.image{
+
+			.image {
 				margin: 0 20rpx;
 				width: 30vw;
 				border-radius: 8rpx;
 			}
-			
-			.video{
+
+			.video {
 				margin: 0 20rpx;
 				width: 50vw;
 				height: 50vw;
@@ -259,15 +282,17 @@
 			}
 
 		}
-		.item:last-child{
+
+		.item:last-child {
 			margin-bottom: 0rpx;
 		}
 
 		.right {
 			flex-direction: row-reverse;
-			.message{
+
+			.message {
 				background-color: #95ec69;
-				margin:0 20rpx 0 70rpx;
+				margin: 0 20rpx 0 70rpx;
 			}
 		}
 	}
@@ -277,29 +302,31 @@
 		bottom: 0;
 		width: 100vw;
 
-		
-		.input-box{
+
+		.input-box {
 			background-color: #f7f7f7;
 			display: flex;
 			padding: 10rpx 20rpx;
 			box-sizing: border-box;
-			.u-icon{
+
+			.u-icon {
 				margin-left: 10rpx;
 			}
-			.u-textarea{
+
+			.u-textarea {
 				flex: 1;
-				border: none!important;
+				border: none !important;
 			}
 		}
-		
-		.emoji-container{
+
+		.emoji-container {
 			height: 400rpx;
-			
-			.emoji-list{
+
+			.emoji-list {
 				display: flex;
 				flex-wrap: wrap;
-				
-				.emoji-item{
+
+				.emoji-item {
 					font-size: 44rpx;
 					width: 93rpx;
 					height: 93rpx;
@@ -310,20 +337,21 @@
 				}
 			}
 		}
-		
-		.function-list{
+
+		.function-list {
 			display: flex;
 			flex-wrap: wrap;
 			padding: 40rpx;
 			background-color: #f7f7f7;
-			
-			.item{
+
+			.item {
 				width: 25%;
 				display: flex;
 				justify-content: center;
 				align-items: center;
 				flex-direction: column;
-				.icon-box{
+
+				.icon-box {
 					width: 120rpx;
 					height: 120rpx;
 					background-color: white;
@@ -332,7 +360,8 @@
 					justify-content: center;
 					align-items: center;
 				}
-				.text{
+
+				.text {
 					font-size: 24rpx;
 					text-align: center;
 					color: #6b6b6b;
@@ -340,6 +369,6 @@
 				}
 			}
 		}
-		
+
 	}
 </style>

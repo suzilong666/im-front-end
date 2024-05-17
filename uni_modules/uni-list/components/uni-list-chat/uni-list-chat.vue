@@ -427,7 +427,7 @@
 	}
 
 	.uni-list-chat__header-image {
-		margin: 1px;
+		// margin: 1px;
 		/* #ifdef APP-NVUE */
 		width: 50px;
 		height: 50px;

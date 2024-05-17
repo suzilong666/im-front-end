@@ -6,6 +6,7 @@
 			</template>
 		</u-navbar>
 		<friendList :isShowCheckbox="true" @change="change"></friendList>
+		<u-empty v-if="$store.state.friendList.length == 0" icon="/static/img/empty/message.png" text="快去添加好友吧"></u-empty>
 	</view>
 </template>
 

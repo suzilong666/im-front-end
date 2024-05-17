@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<u-checkbox-group v-model="selectFriend" placement="column" @change="change">
-			<u-index-list :index-list="indexList">
+			<u-index-list :index-list="indexList" activeColor="#05c160">
 				<template v-for="(item, index) in friendList">
 					<u-index-item>
 						<u-index-anchor :text="indexList[index]"></u-index-anchor>

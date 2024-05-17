@@ -89,6 +89,17 @@ class Ws {
 	 */
 	message(data) {
 		store.dispatch('updateMessage', data)
+		// const innerAudioContext = uni.createInnerAudioContext();
+		// innerAudioContext.autoplay = false;
+		// innerAudioContext.src = '/static/audio/message.mp3';
+		// innerAudioContext.onPlay(() => {
+		//   console.log('开始播放');
+		// });
+		// innerAudioContext.onError((res) => {
+		//   console.log(res.errMsg);
+		//   console.log(res.errCode);
+		// });
+		// innerAudioContext.play()
 	}
 
 	/**
@@ -104,6 +115,13 @@ class Ws {
 	 */
 	friendApplication() {
 		store.dispatch('getApplicationCount')
+	}
+	
+	/**
+	 * 对方通过了你的好友申请
+	 */
+	friendApplicationSuccess() {
+		store.dispatch('getFriendList')
 	}
 }
 

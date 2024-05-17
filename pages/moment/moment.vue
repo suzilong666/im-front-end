@@ -1,12 +1,12 @@
 <template>
 	<view>
-		<u-navbar title="" :autoBack="true" fixed rightIcon="camera-fill" bgColor="transparent" @rightClick="postMoment"></u-navbar>
+		<u-navbar title="" :autoBack="true" fixed :rightIcon="(friendId && friendId!=$store.state.userInfo.id) ? '' : 'camera-fill'" bgColor="transparent" @rightClick="postMoment"></u-navbar>
 		<view class="top">
 			<image src="../../static/img/common/moment.jpg" mode="aspectFill"></image>
 
 			<view class="avatar">
-				<view class="nickname">{{$store.state.userInfo.nickname}}</view>
-				<u-avatar :src="formatUrl(this.$store.state.userInfo.avatar)" shape="square" size="60"></u-avatar>
+				<view class="nickname">{{nickname}}</view>
+				<u-avatar :src="formatUrl(avatar)" shape="square" size="60"></u-avatar>
 			</view>
 		</view>
 		<view class="moment-list">
@@ -55,6 +55,8 @@
 			</view>
 		</view>
 
+		<u-empty v-if="momentList.length == 0" icon="/static/img/empty/comment.png" text="快去发布一条朋友圈吧"></u-empty>
+
 		<view v-show="isShowComment" class="comment">
 			<view class="input-box">
 				<u--textarea v-model="content" :placeholder="replyName ? `回复 ${replyName}:`:'评论'" autoHeight @confirm="send" @focus="closeBottom"></u--textarea>
@@ -81,6 +83,7 @@
 		},
 		data() {
 			return {
+				friendId: null,
 				momentList: [],
 				total: 0,
 				page: 1,
@@ -92,7 +95,18 @@
 				replyName: '',
 			};
 		},
-		onShow() {
+		computed: {
+			nickname() {
+				return this.$store.getters.getNameByUid(this.friendId || this.$store.state.userInfo.id)
+			},
+			avatar() {
+				return this.$store.getters.getAvatarByUid(this.friendId || this.$store.state.userInfo.id)
+			}
+		},
+		onLoad({
+			friendId
+		}) {
+			this.friendId = friendId
 			this.getMomentList()
 		},
 		onPageScroll() {
@@ -131,7 +145,12 @@
 				this.$set(item, 'isShowPopup', !item.isShowPopup)
 			},
 			async getMomentList() {
-				const { data } = await getMomentList({ page: this.page })
+				const { friendId } = this
+				const params = { page: this.page }
+				if (friendId) {
+					params.friend_id = friendId
+				}
+				const { data } = await getMomentList(params)
 				this.total = data.total
 				this.momentList = data.data.map(item => {
 					const { content, uid } = item

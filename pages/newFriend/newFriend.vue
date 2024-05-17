@@ -11,12 +11,23 @@
 				</view>
 
 				<view class="right">
-					<view v-if="item.status == 1" class="f--c">
+					<view class="f--c">
 						<u-button type="success" size="mini" text="接受" @tap="accept(item.id)"></u-button>
 						<u-button type="warning" size="mini" text="拒绝" style="margin-left: 20rpx;" @tap="refuse(item.id)"></u-button>
 					</view>
-					<text v-else-if="item.status == 2">已添加</text>
-					<text v-else-if="item.status == 3">已拒绝</text>
+				</view>
+			</view>
+		</view>
+		<view class="list">
+			<view class="item f u-border-bottom" v-for="item in applicationRecord">
+				<u-avatar :src="formatUrl(item.avatar)" shape="square" size="40"></u-avatar>
+				<view class="center">
+					<view class="u-line-1">{{item.nickname}}</view>
+					<view class="application-message u-line-2">{{item.application_message}}</view>
+				</view>
+
+				<view class="right">
+					{{statusMap[item.status] || ''}}
 				</view>
 			</view>
 		</view>
@@ -29,20 +40,46 @@
 		addFriend,
 		getApplication,
 		accept,
-		refuse
+		refuse,
+		getApplicationRecord
 	} from '@/api/api';
 
 	export default {
 		data() {
 			return {
 				username: '',
-				applicationList: []
+				applicationList: [],
+				applicationRecord: [],
+				statusMap: {
+					1: '等待通过',
+					2: '已添加',
+					3: '已拒绝',
+				}
 			};
 		},
 		onShow() {
 			this.getApplication()
+			this.getApplicationRecord()
 		},
 		methods: {
+			/**
+			 * 申请列表
+			 */
+			async getApplication() {
+				const { data } = await getApplication()
+				this.applicationList = data
+			},
+			/**
+			 * 申请记录
+			 */
+			async getApplicationRecord() {
+				const { data } = await getApplicationRecord()
+				this.applicationRecord = data.data
+			},
+			/**
+			 * 同意好友申请
+			 * @param {Object} id
+			 */
 			async accept(id) {
 				await accept({ id })
 				this.getApplication()
@@ -52,15 +89,18 @@
 					url: `/pages/friendDetail/friendDetail?id=${id}`
 				})
 			},
+			/**
+			 * 拒绝好友申请
+			 * @param {Object} id
+			 */
 			async refuse(id) {
 				await refuse({ id })
 				this.getApplication()
 				this.$store.dispatch('getApplicationCount')
 			},
-			async getApplication() {
-				const { data } = await getApplication()
-				this.applicationList = data.data
-			},
+			/**
+			 * 搜索好友
+			 */
 			async search() {
 				const { data } = await searchFriend({ username: this.username })
 				if (!data) return this.$showToast('该用户不存在')

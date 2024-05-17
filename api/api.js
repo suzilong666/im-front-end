@@ -14,7 +14,8 @@ export const login = (data) => post('/api/auth/login', data)
 export const register = (data) => post('/api/auth/register', data)
 
 // 好友
-export const addFriend = (data) => get('/api/friend/add', data)
+export const addFriend = (data) => get('/api/friend/addFriend', data)
+export const deleteFriend = (data) => get('/api/friend/deleteFriend', data)
 export const getApplication = (data) => get('/api/friend/application', data)
 export const getApplicationCount = (data) => get('/api/friend/applicationCount', data)
 export const getApplicationRecord = (data) => get('/api/friend/applicationRecord', data)
@@ -26,6 +27,7 @@ export const getFriendDetail = (data) => get('/api/friend/friendDetail', data)
 
 // 聊天
 export const send = (data) => post('/api/chat/send', data)
+export const read = (data) => get('/api/chat/read', data)
 export const bind = (data) => get('/api/chat/bind', data)
 export const getChatHistory = (data) => get('/api/chat/getChatHistory', data)
 export const getChatList = (data) => get('/api/chat/getChatList', data)
@@ -47,12 +49,18 @@ export const deleteComment = (data) => post('/api/moment/deleteComment', data)
 // common
 export const upload = (data) => uploadFn('/api/common/upload', data)
 export const batchUpload = (fileList) => {
+	uni.showLoading({
+		mask: true,
+		title: '上传中'
+	})
 	return new Promise((resolve, reject) => {
 		const p = fileList.map(file => upload(file))
 		Promise.all(p).then((res) => {
 			resolve(res.map(item => item.data))
 		}).catch(() => {
 			reject()
+		}).finally(() => {
+			uni.hideLoading()
 		})
 	})
 }

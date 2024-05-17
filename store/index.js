@@ -38,8 +38,23 @@ const store = new Vuex.Store({
 		}) {
 			state[key] = value
 		},
+		logout(state) {
+			state.token = ''
+			state.userInfo = {}
+			state.chatList = []
+			state.friendList = []
+			state.groupChatList = []
+			state.friendHistoryMap = {}
+			state.groupChatHistoryMap = {}
+			state.groupChatMemberMap = {}
+			// state.chatsUnreadQuantity = 0
+			state.contactsUnreadQuantity = 0
+		}
 	},
 	getters: {
+		chatsUnreadQuantity(state) {
+			return state.chatList.reduce((count, item) => { count + +item.unread_quantity }, 0)
+		},
 		baseUrl: (state) => {
 			return state.config.baseUrl || ''
 		},
@@ -50,6 +65,11 @@ const store = new Vuex.Store({
 			if (id == state.userInfo.id) return state.userInfo.nickname;
 			const friend = state.friendList.find(item => item.id == id)
 			return friend ? (friend.remark || friend.nickname) : ''
+		},
+		getAvatarByUid: (state) => (id) => {
+			if (id == state.userInfo.id) return state.userInfo.avatar;
+			const friend = state.friendList.find(item => item.id == id)
+			return friend ? friend.avatar : ''
 		},
 		getFriendHistory: (state) => (id) => {
 			return state.friendHistoryMap[id] || []
@@ -71,8 +91,9 @@ const store = new Vuex.Store({
 		}) {
 			if (!state.token) return
 			await dispatch('getConfig');
-			dispatch('getUserInfo');
-			dispatch('getFriendList');
+			await dispatch('getUserInfo');
+			await dispatch('getFriendList');
+			dispatch('getChatList');
 			dispatch('getGroupChatList');
 			dispatch('getApplicationCount');
 		},
@@ -160,13 +181,14 @@ const store = new Vuex.Store({
 			const {
 				data
 			} = await getChatList()
+			let unreadQuantity = 0
 			data.forEach(item => {
+				unreadQuantity += (item.unread_quantity || 0)
 				let title = ''
 				let avatar = ''
 				if (item.type == 1) {
 					// 私聊
 					const friend = getters.getFriend(item.friend_id)
-					debugger
 					if (friend) {
 						title = friend.remark || friend.nickname || friend.username || ''
 						avatar = friend.avatar
@@ -183,6 +205,20 @@ const store = new Vuex.Store({
 				key: 'chatList',
 				value: data
 			})
+			// commit('set', {
+			// 	key: 'chatsUnreadQuantity',
+			// 	value: unreadQuantity
+			// })
+			if (unreadQuantity > 0) {
+				uni.setTabBarBadge({
+					index: 0,
+					text: String(unreadQuantity)
+				})
+			} else {
+				uni.removeTabBarBadge({
+					index: 0
+				})
+			}
 		},
 		/**
 		 * 获取聊天记录
@@ -251,6 +287,7 @@ const store = new Vuex.Store({
 			if (chat) {
 				chat.last_message = message.message
 				chat.last_message_time = create_time
+				chat.unread_quantity += 1
 				commit('set', {
 					key: 'chatList',
 					value: chatList
