@@ -43,8 +43,8 @@ function request({
 					})
 				}
 			},
-			fail() {
-				reject()
+			fail(error) {
+				reject(error)
 			}
 		})
 	})

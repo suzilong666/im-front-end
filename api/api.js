@@ -27,6 +27,8 @@ export const getFriendDetail = (data) => get('/api/friend/friendDetail', data)
 
 // 聊天
 export const send = (data) => post('/api/chat/send', data)
+export const topping = (data) => post('/api/chat/topping', data)
+export const deleteChat = (data) => post('/api/chat/deleteChat', data)
 export const read = (data) => get('/api/chat/read', data)
 export const bind = (data) => get('/api/chat/bind', data)
 export const getChatHistory = (data) => get('/api/chat/getChatHistory', data)
