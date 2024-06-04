@@ -1,10 +1,14 @@
 import store from '@/store/index.js'; //需要引入store
+import { baseUrl } from '@/config/index.js'
 
 function request({
 	url,
 	method = 'GET',
 	data
 }) {
+	// #ifdef APP
+	url = baseUrl + url
+	// #endif
 	return new Promise((resolve, reject) => {
 		const header = {}
 		const token = store.state.token;
@@ -45,6 +49,7 @@ function request({
 			},
 			fail(error) {
 				reject(error)
+				console.error('接口请求失败', error);
 			}
 		})
 	})
@@ -66,6 +71,9 @@ export function post(url, data) {
 }
 
 export function upload(url, filePath) {
+	// #ifdef APP
+	url = baseUrl + url
+	// #endif
 	const token = store.state.token;
 	return new Promise((resolve, reject) => {
 		uni.uploadFile({

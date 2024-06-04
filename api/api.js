@@ -27,6 +27,7 @@ export const getFriendDetail = (data) => get('/api/friend/friendDetail', data)
 
 // 聊天
 export const send = (data) => post('/api/chat/send', data)
+export const withdraw = (data) => post('/api/chat/withdraw', data)
 export const topping = (data) => post('/api/chat/topping', data)
 export const deleteChat = (data) => post('/api/chat/deleteChat', data)
 export const read = (data) => get('/api/chat/read', data)
@@ -39,7 +40,10 @@ export const getGroupChatList = (data) => get('/api/groupChat/getGroupChatList',
 export const getGroupChatMemberList = (data) => get('/api/groupChat/getGroupChatMemberList', data)
 export const getGroupChatHistory = (data) => get('/api/groupChat/getGroupChatHistory', data)
 export const createGroupChat = (data) => post('/api/groupChat/createGroupChat', data)
+export const updateGroupChat = (data) => post('/api/groupChat/updateGroupChat', data)
+export const setGroupChatNotice = (data) => post('/api/groupChat/setGroupChatNotice', data)
 export const sendToGroup = (data) => post('/api/groupChat/send', data)
+export const groupChatWithdraw = (data) => post('/api/groupChat/withdraw', data)
 
 // 朋友圈
 export const postMoment = (data) => post('/api/moment/createMoment', data)

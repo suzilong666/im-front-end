@@ -332,6 +332,15 @@ const store = new Vuex.Store({
 			}
 		}
 	},
-	plugins: [createPersistedState()]
+	plugins: [
+		createPersistedState({
+			key: 'im', // 状态保存到本地的 key   
+			storage: { // 存储方式定义  
+				getItem: (key) => uni.getStorageSync(key), // 获取  
+				setItem: (key, value) => uni.setStorageSync(key, value), // 存储  
+				removeItem: (key) => uni.removeStorageSync(key) // 删除  
+			}
+		})
+	]
 })
 export default store

@@ -44,6 +44,7 @@
 				login(this.form).then(({
 					data
 				}) => {
+					console.log(1);
 					this.$store.commit('set', {
 						key: 'token',
 						value: data

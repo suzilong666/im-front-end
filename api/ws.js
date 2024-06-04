@@ -116,12 +116,43 @@ class Ws {
 	friendApplication() {
 		store.dispatch('getApplicationCount')
 	}
-	
+
 	/**
 	 * 对方通过了你的好友申请
 	 */
 	friendApplicationSuccess() {
 		store.dispatch('getFriendList')
+	}
+
+	/**
+	 * 群通知
+	 */
+	groupChatNotice(data) {
+		const { group_id, notice } = data
+		const { groupChatList } = store.state
+		const group = groupChatList.find(item => item.id == group_id)
+		group.notice = notice
+		store.commit('set', {
+			key: 'groupChatList',
+			value: groupChatList
+		})
+		uni.$emit('groupChatNotice', data)
+	}
+
+	/**
+	 * 撤销
+	 * @param {Object} data
+	 */
+	withdraw(data) {
+		uni.$emit('withdraw', data)
+	}
+
+	/**
+	 * 群聊撤销
+	 * @param {Object} data
+	 */
+	groupChatWithdraw(data) {
+		uni.$emit('groupChatWithdraw', data)
 	}
 }
 

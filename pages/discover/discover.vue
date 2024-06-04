@@ -22,7 +22,4 @@
 </script>
 
 <style lang="scss">
-	page {
-		padding-top: 100rpx;
-	}
 </style>

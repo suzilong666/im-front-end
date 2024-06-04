@@ -83,10 +83,6 @@
 </script>
 
 <style lang="scss" scoped>
-	page {
-		padding-top: 100rpx;
-	}
-
 	.list {
 		.item {
 			padding: 20rpx 30rpx;

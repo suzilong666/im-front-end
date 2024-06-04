@@ -50,7 +50,15 @@
 			"style": {
 				"navigationBarTitleText": "",
 				"navigationBarBackgroundColor": "#ededed",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"titleNView": {
+						"buttons": [{
+							"text": "···",
+							"fontSize": "28px"
+						}]
+					}
+				}
 			}
 		},
 		{
@@ -100,10 +108,17 @@
 			}
 		},
 		{
-			"path" : "pages/ApplyToAddFriend/ApplyToAddFriend",
+			"path": "pages/ApplyToAddFriend/ApplyToAddFriend",
+			"style": {
+				"navigationBarTitleText": "申请添加朋友",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path" : "pages/groupInfo/groupInfo",
 			"style" : 
 			{
-				"navigationBarTitleText" : "申请添加朋友",
+				"navigationBarTitleText" : "",
 				"enablePullDownRefresh" : false
 			}
 		}
